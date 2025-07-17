@@ -6,6 +6,7 @@ from phonenumbers.phonenumberutil import NumberParseException
 import os
 from phone_tracker import phone_found
 from telebot import types
+import re
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
@@ -57,9 +58,10 @@ def phone_message(message: Message) -> None:
 
 def phone_input_info(message: Message) -> None:
     number = message.text.strip()
+    number_re_check = re.fullmatch(r'\+\d{11}', number)
     try:
         parse_number = phonenumbers.parse(number)
-        if phonenumbers.is_valid_number(parse_number):
+        if phonenumbers.is_valid_number(parse_number) and number_re_check:
             result_list_info = phone_found(number)
             result_text = (
                 f"📞 Результаты по номеру:\n\n"
