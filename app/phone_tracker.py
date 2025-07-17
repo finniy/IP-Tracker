@@ -3,7 +3,7 @@ from phonenumbers import timezone, carrier, geocoder
 from work_with_json import found_operator
 
 
-def phone(phone_number: str) -> dict[str, str]:
+def phone_found(phone_number: str) -> dict[str, str]:
     """
     Получает информацию о телефонном номере.
 
