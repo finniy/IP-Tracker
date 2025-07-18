@@ -35,9 +35,9 @@ def phone_found(phone_number: str) -> dict[str, str]:
         region = 'Не удалось найти данные'
 
     result_list_info = {
-        "Город": city,
-        "Страна": region,
-        "Оператор": operator
+        "City": city,
+        "Country": region,
+        "Operator": operator
     }
 
     return result_list_info

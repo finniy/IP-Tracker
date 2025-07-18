@@ -65,9 +65,9 @@ def phone_input_info(message: Message) -> None:
             result_list_info = phone_found(number)
             result_text = (
                 f"📞 Результаты по номеру:\n\n"
-                f"Страна: {result_list_info['Страна']}\n"
-                f"Город: {result_list_info['Город']}\n"
-                f"Оператор: {result_list_info['Оператор']}"
+                f"Страна: {result_list_info['Country']}\n"
+                f"Город: {result_list_info['City']}\n"
+                f"Оператор: {result_list_info['Operator']}"
             )
             bot.send_message(message.chat.id, result_text)
         else:
