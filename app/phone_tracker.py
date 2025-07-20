@@ -42,3 +42,11 @@ def phone_found(phone_number: str) -> dict[str, str]:
 
     return result_list_info
 
+def format_phone_info(result_list_info: dict) -> str:
+    result_text = (
+        f"📞 Результаты по номеру:\n\n"
+        f"Страна: {result_list_info['Country']}\n"
+        f"Город: {result_list_info['City']}\n"
+        f"Оператор: {result_list_info['Operator']}"
+    )
+    return result_text

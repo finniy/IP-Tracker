@@ -4,9 +4,11 @@ from dotenv import load_dotenv
 import phonenumbers
 from phonenumbers.phonenumberutil import NumberParseException
 import os
-from phone_tracker import phone_found
+from ip_track import get_info_by_ip, format_ip_info, get_static_map_url
+from phone_tracker import phone_found, format_phone_info
 from telebot import types
 import re
+from check_valid_ip import is_valid_ip
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
@@ -33,10 +35,15 @@ help_text = (
     "/phone — пробив по номеру телефона\n"
     "/ip — пробив по IP"
 )
-phone_text = "⚠️ Номер вводите в формате: +71234567890 (без пробелов)"
+phone_start_text = "⚠️ Номер вводите в формате: +71234567890 (без пробелов)"
+ip_start_text = "🌐 Введите IP-адрес в формате 192.168.0.1"
 invalid_number_text = (
     "❌ Неверный формат номера.\n"
     "Пожалуйста, введи номер в формате: +71234567890 (без пробелов и символов)."
+)
+invalid_ip_text = (
+    "❌ Неверный формат IP-адреса.\n"
+    "Пожалуйста, введите корректный IP-адрес, например: 192.168.1.1"
 )
 
 
@@ -52,34 +59,55 @@ def help(message: Message) -> None:
 
 @bot.message_handler(commands=['phone', 'PHONE'])
 def phone_message(message: Message) -> None:
-    bot.send_message(message.chat.id, phone_text)
+    bot.send_message(message.chat.id, phone_start_text)
     bot.register_next_step_handler(message, phone_input_info)
 
 
 def phone_input_info(message: Message) -> None:
     number = message.text.strip()
     number_re_check = re.fullmatch(r'\+\d{11}', number)
+
     try:
         parse_number = phonenumbers.parse(number)
+
         if phonenumbers.is_valid_number(parse_number) and number_re_check:
-            result_list_info = phone_found(number)
-            result_text = (
-                f"📞 Результаты по номеру:\n\n"
-                f"Страна: {result_list_info['Country']}\n"
-                f"Город: {result_list_info['City']}\n"
-                f"Оператор: {result_list_info['Operator']}"
-            )
-            bot.send_message(message.chat.id, result_text)
+            result_list_info = format_phone_info(phone_found(number))
+            bot.send_message(message.chat.id, result_list_info)
         else:
             bot.send_message(message.chat.id, invalid_number_text)
             bot.register_next_step_handler(message, phone_input_info)
+
     except NumberParseException:
         bot.send_message(message.chat.id, invalid_number_text)
         bot.register_next_step_handler(message, phone_input_info)
 
+
 @bot.message_handler(commands=['ip', 'IP'])
 def ip_message(message: Message) -> None:
-    bot.send_message(message.chat.id, "⚠️ Эта функция ещё в разработке и скоро будет доступна. Спасибо за понимание!")
+    bot.send_message(message.chat.id, ip_start_text)
+    bot.register_next_step_handler(message, ip_input_info)
+
+
+def ip_input_info(message: Message) -> None:
+    ip_address = message.text.strip()
+
+    if is_valid_ip(ip_address):
+        ip_info, map_url = get_info_by_ip(ip_address)
+
+        if isinstance(ip_info, dict):
+            ip_info = format_ip_info(ip_info)
+            bot.send_message(message.chat.id, ip_info)
+            send_map_photo(message, map_url)
+
+        else:
+            bot.send_message(message.chat.id, ip_info)
+    else:
+        bot.send_message(message.chat.id, invalid_ip_text)
+        bot.register_next_step_handler(message, ip_input_info)
+
+
+def send_map_photo(message: Message, map_url: str) -> None:
+    bot.send_photo(message.chat.id, map_url, caption="🗺️ Примерное местоположение по IP")
 
 
 bot.set_my_commands(commands)
