@@ -4,11 +4,11 @@ from dotenv import load_dotenv
 import phonenumbers
 from phonenumbers.phonenumberutil import NumberParseException
 import os
-from ip_track import get_info_by_ip, format_ip_info, get_static_map_url
+from ip_track import get_info_by_ip, format_ip_info
 from phone_tracker import phone_found, format_phone_info
 from telebot import types
 import re
-from check_valid_ip import is_valid_ip
+from check_valid_ip import is_valid_ip_first
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
@@ -49,7 +49,11 @@ invalid_ip_text = (
 
 @bot.message_handler(commands=['start', 'START'])
 def start(message: Message) -> None:
-    bot.send_message(message.chat.id, welcome_text)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button_1 = types.KeyboardButton('/ip')
+    button_2 = types.KeyboardButton('/phone')
+    markup.add(button_1, button_2)
+    bot.send_message(message.chat.id, welcome_text, reply_markup=markup)
 
 
 @bot.message_handler(commands=['help', 'HELP'])
@@ -91,10 +95,10 @@ def ip_message(message: Message) -> None:
 def ip_input_info(message: Message) -> None:
     ip_address = message.text.strip()
 
-    if is_valid_ip(ip_address):
+    if is_valid_ip_first(ip_address):
         ip_info, map_url = get_info_by_ip(ip_address)
 
-        if isinstance(ip_info, dict):
+        if isinstance(ip_info, dict) and map_url:
             ip_info = format_ip_info(ip_info)
             bot.send_message(message.chat.id, ip_info)
             send_map_photo(message, map_url)
