@@ -9,6 +9,7 @@ from phone_tracker import phone_found, format_phone_info
 from telebot import types
 import re
 from check_valid_ip import is_valid_ip_first
+from database import add_info_in_database
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
@@ -49,6 +50,7 @@ invalid_ip_text = (
 
 @bot.message_handler(commands=['start', 'START'])
 def start(message: Message) -> None:
+    # Обработка команды /start — отправка приветствия и отображение кнопок
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     button_1 = types.KeyboardButton('/ip')
     button_2 = types.KeyboardButton('/phone')
@@ -58,16 +60,19 @@ def start(message: Message) -> None:
 
 @bot.message_handler(commands=['help', 'HELP'])
 def help(message: Message) -> None:
+    # Обработка команды /help — вывод списка доступных команд
     bot.send_message(message.chat.id, help_text)
 
 
 @bot.message_handler(commands=['phone', 'PHONE'])
 def phone_message(message: Message) -> None:
+    # Обработка команды /phone — запрос номера телефона у пользователя
     bot.send_message(message.chat.id, phone_start_text)
     bot.register_next_step_handler(message, phone_input_info)
 
 
 def phone_input_info(message: Message) -> None:
+    # Обработка номера телефона, проверка его корректности и вывод информации
     number = message.text.strip()
     number_re_check = re.fullmatch(r'\+\d{11}', number)
 
@@ -75,42 +80,63 @@ def phone_input_info(message: Message) -> None:
         parse_number = phonenumbers.parse(number)
 
         if phonenumbers.is_valid_number(parse_number) and number_re_check:
+            # Сохраняем запрос в базу данных
+            user_id = str(message.from_user.id)
+            username = message.from_user.username
+            user_request = number
+            add_info_in_database(user_id, username, user_request)
+
+            # Отправка отформатированной информации
             result_list_info = format_phone_info(phone_found(number))
             bot.send_message(message.chat.id, result_list_info)
         else:
+            # Повторный запрос при неверном формате
             bot.send_message(message.chat.id, invalid_number_text)
             bot.register_next_step_handler(message, phone_input_info)
 
     except NumberParseException:
+        # Ошибка при разборе номера
         bot.send_message(message.chat.id, invalid_number_text)
         bot.register_next_step_handler(message, phone_input_info)
 
 
 @bot.message_handler(commands=['ip', 'IP'])
 def ip_message(message: Message) -> None:
+    # Обработка команды /ip — запрос IP-адреса у пользователя
     bot.send_message(message.chat.id, ip_start_text)
     bot.register_next_step_handler(message, ip_input_info)
 
 
 def ip_input_info(message: Message) -> None:
+    # Обработка IP-адреса, проверка и вывод информации + карта
     ip_address = message.text.strip()
 
     if is_valid_ip_first(ip_address):
         ip_info, map_url = get_info_by_ip(ip_address)
 
         if isinstance(ip_info, dict) and map_url:
+            # Сохраняем запрос в базу данных
+            user_id = str(message.from_user.id)
+            username = message.from_user.username
+            user_request = ip_address
+            add_info_in_database(user_id, username, user_request)
+
+            # Отправка информации и карты
             ip_info = format_ip_info(ip_info)
             bot.send_message(message.chat.id, ip_info)
             send_map_photo(message, map_url)
-
         else:
+            # Ошибка или не найден IP
             bot.send_message(message.chat.id, ip_info)
+            bot.register_next_step_handler(message, ip_input_info)
     else:
+        # Неверный IP-адрес
         bot.send_message(message.chat.id, invalid_ip_text)
         bot.register_next_step_handler(message, ip_input_info)
 
 
 def send_map_photo(message: Message, map_url: str) -> None:
+    # Отправка изображения карты с координатами IP
     bot.send_photo(message.chat.id, map_url, caption="🗺️ Примерное местоположение по IP")
 
 
