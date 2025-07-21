@@ -10,6 +10,8 @@ from telebot import types
 import re
 from check_valid_ip import is_valid_ip_first
 from database import add_info_in_database
+from text_for_bot import welcome_text, help_text, phone_start_text
+from text_for_bot import ip_start_text, invalid_number_text, invalid_ip_text
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
@@ -21,35 +23,13 @@ commands = [
     types.BotCommand('phone', 'Пробив по номеру телефона'),
     types.BotCommand('ip', 'Пробив по IP-адресу'),
 ]
-welcome_text = (
-    "👋 Привет! Добро пожаловать в IP-Tracker\n"
-    "🔎 Я помогу тебе получить информацию по номеру телефона или IP-адресу.\n\n"
-    "Вот что я умею:\n"
-    "📱 Пробить по номеру телефона: оператор, регион, возможные утечки\n"
-    "🌐 Пробить по IP-адресу: геолокация, провайдер, подозрительная активность\n\n"
-    "❗️ Используй команды:\n"
-    "/phone — для пробива по номеру\n"
-    "/ip — для пробива по IP\n"
-)
-help_text = (
-    "📌 Доступные команды:\n\n"
-    "/phone — пробив по номеру телефона\n"
-    "/ip — пробив по IP"
-)
-phone_start_text = "⚠️ Номер вводите в формате: +71234567890 (без пробелов)"
-ip_start_text = "🌐 Введите IP-адрес в формате 192.168.0.1"
-invalid_number_text = (
-    "❌ Неверный формат номера.\n"
-    "Пожалуйста, введи номер в формате: +71234567890 (без пробелов и символов)."
-)
-invalid_ip_text = (
-    "❌ Неверный формат IP-адреса.\n"
-    "Пожалуйста, введите корректный IP-адрес, например: 192.168.1.1"
-)
 
 
 @bot.message_handler(commands=['start', 'START'])
 def start(message: Message) -> None:
+    username = message.from_user.username
+    print(f'{username} запустил бота')
+
     # Обработка команды /start — отправка приветствия и отображение кнопок
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     button_1 = types.KeyboardButton('/ip')
@@ -85,6 +65,7 @@ def phone_input_info(message: Message) -> None:
             username = message.from_user.username
             user_request = number
             add_info_in_database(user_id, username, user_request)
+            print(f'{username} выполнил проверку номера')
 
             # Отправка отформатированной информации
             result_list_info = format_phone_info(phone_found(number))
@@ -120,6 +101,7 @@ def ip_input_info(message: Message) -> None:
             username = message.from_user.username
             user_request = ip_address
             add_info_in_database(user_id, username, user_request)
+            print(f'{username} выполнил проверку ip')
 
             # Отправка информации и карты
             ip_info = format_ip_info(ip_info)
@@ -140,5 +122,6 @@ def send_map_photo(message: Message, map_url: str) -> None:
     bot.send_photo(message.chat.id, map_url, caption="🗺️ Примерное местоположение по IP")
 
 
-bot.set_my_commands(commands)
-bot.polling(none_stop=True)
+def main():
+    bot.set_my_commands(commands)
+    bot.polling(none_stop=True)
