@@ -64,3 +64,29 @@ def add_info_in_database(chat_id_in: str, nickname: str, user_request: str) -> N
         VALUES (?, ?)
         ''', (user_id, user_request))
         db.commit()
+
+
+def take_user_history(user_id: str) -> list:
+    # Возвращает список с запросами пользователя
+    db = sqlite3.connect('user_requests.db')
+    cursor = db.cursor()
+
+    cursor.execute('''
+    SELECT user_request
+    FROM request JOIN users_names ON request.user_id = users_names.id
+    WHERE chat_id = ?''', (user_id,))
+
+    rows = cursor.fetchall()
+    db.close()
+
+    lst_with_requests = [row[0] for row in rows]
+    return lst_with_requests
+
+
+def format_user_requests(requests: list, username: str) -> str:
+    # Формирует строку с пронумерованным списком запросов для отправки одним сообщением
+    if not requests:
+        return f"История запросов {username} пуста."
+
+    lines = [f"{i}. {req}" for i, req in enumerate(requests, start=1)]
+    return f"История запросов {username}:\n" + "\n".join(lines)

@@ -9,7 +9,7 @@ from phone_tracker import phone_found, format_phone_info
 from telebot import types
 import re
 from check_valid_ip import is_valid_ip_first
-from database import add_info_in_database
+from database import add_info_in_database, take_user_history, format_user_requests
 from text_for_bot import welcome_text, help_text, phone_start_text
 from text_for_bot import ip_start_text, invalid_number_text, invalid_ip_text
 
@@ -22,6 +22,7 @@ commands = [
     types.BotCommand('help', 'Список команд'),
     types.BotCommand('phone', 'Пробив по номеру телефона'),
     types.BotCommand('ip', 'Пробив по IP-адресу'),
+    types.BotCommand('history', 'История ваших запросов'),
 ]
 
 
@@ -34,7 +35,9 @@ def start(message: Message) -> None:
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     button_1 = types.KeyboardButton('/ip')
     button_2 = types.KeyboardButton('/phone')
-    markup.add(button_1, button_2)
+    button_3 = types.KeyboardButton('/history')
+    markup.add(button_1, button_2, button_3)
+
     bot.send_message(message.chat.id, welcome_text, reply_markup=markup)
 
 
@@ -115,6 +118,16 @@ def ip_input_info(message: Message) -> None:
         # Неверный IP-адрес
         bot.send_message(message.chat.id, invalid_ip_text)
         bot.register_next_step_handler(message, ip_input_info)
+
+
+@bot.message_handler(commands=['history', 'HISTORY'])
+def send_user_history(message: Message) -> None:
+    # Обрабатывает команды /history и /HISTORY, отправляя пользователю его историю запросов
+    user_id = str(message.from_user.id)
+    username = message.from_user.username
+
+    lst_with_requests = format_user_requests(take_user_history(user_id), username)
+    bot.send_message(message.chat.id, lst_with_requests)
 
 
 def send_map_photo(message: Message, map_url: str) -> None:
