@@ -10,7 +10,7 @@ from telebot import types
 import re
 from check_valid_ip import is_valid_ip_first
 from database import add_info_in_database, take_user_history, format_user_requests
-from text_for_bot import welcome_text, help_text, phone_start_text
+from text_for_bot import welcome_text, help_text, phone_start_text, github_link_text
 from text_for_bot import ip_start_text, invalid_number_text, invalid_ip_text
 
 load_dotenv()
@@ -23,6 +23,7 @@ commands = [
     types.BotCommand('phone', 'Пробив по номеру телефона'),
     types.BotCommand('ip', 'Пробив по IP-адресу'),
     types.BotCommand('history', 'История ваших запросов'),
+    types.BotCommand('github', 'Ссылка на GitHub проекта')
 ]
 
 
@@ -133,6 +134,12 @@ def send_user_history(message: Message) -> None:
 def send_map_photo(message: Message, map_url: str) -> None:
     # Отправка изображения карты с координатами IP
     bot.send_photo(message.chat.id, map_url, caption="🗺️ Примерное местоположение по IP")
+
+
+@bot.message_handler(commands=['github', 'GITHUB'])
+def send_my_github(message: Message) -> None:
+    # Отправляет ссылку на GitHub проекта
+    bot.send_message(message.chat.id, github_link_text)
 
 
 def main():
