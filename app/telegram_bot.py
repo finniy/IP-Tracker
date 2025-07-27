@@ -1,15 +1,15 @@
 import telebot
 from telebot.types import Message
-import phonenumbers
-from phonenumbers.phonenumberutil import NumberParseException
-from ip_track import get_info_by_ip, format_ip_info
-from phone_tracker import phone_found, format_phone_info
 from telebot import types
 import re
+import phonenumbers
+from phonenumbers.phonenumberutil import NumberParseException
+
+from ip_track import get_info_by_ip, format_ip_info
+from phone_tracker import phone_found, format_phone_info
 from check_valid_ip import is_valid_ip_first
-from database import add_info_in_database, take_user_history, format_user_requests
-from text_for_bot import welcome_text, help_text, phone_start_text, github_link_text
-from text_for_bot import ip_start_text, invalid_number_text, invalid_ip_text
+from database import *
+from text_for_bot import *
 from config import API_KEY
 
 bot = telebot.TeleBot(API_KEY)
