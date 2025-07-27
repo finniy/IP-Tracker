@@ -15,16 +15,16 @@ from config import API_KEY
 bot = telebot.TeleBot(API_KEY)
 
 commands = [
-    types.BotCommand('start', 'Запуск бота и приветствие'),
-    types.BotCommand('help', 'Список команд'),
+    types.BotCommand('start', 'Запуск бота'),
     types.BotCommand('phone', 'Пробив по номеру телефона'),
     types.BotCommand('ip', 'Пробив по IP-адресу'),
     types.BotCommand('history', 'История ваших запросов'),
+    types.BotCommand('help', 'Список команд'),
     types.BotCommand('github', 'Ссылка на GitHub проекта')
 ]
 
 
-@bot.message_handler(commands=['start', 'START'])
+@bot.message_handler(func=lambda m: m.text and m.text.lower().startswith('/start'))
 def start(message: Message) -> None:
     username = message.from_user.username
     print(f'{username} запустил бота')
@@ -39,13 +39,13 @@ def start(message: Message) -> None:
     bot.send_message(message.chat.id, welcome_text, reply_markup=markup)
 
 
-@bot.message_handler(commands=['help', 'HELP'])
+@bot.message_handler(func=lambda m: m.text and m.text.lower().startswith('/help'))
 def help(message: Message) -> None:
     # Обработка команды /help — вывод списка доступных команд
     bot.send_message(message.chat.id, help_text)
 
 
-@bot.message_handler(commands=['phone', 'PHONE'])
+@bot.message_handler(func=lambda m: m.text and m.text.lower().startswith('/phone'))
 def phone_message(message: Message) -> None:
     # Обработка команды /phone — запрос номера телефона у пользователя
     bot.send_message(message.chat.id, phone_start_text)
@@ -82,7 +82,7 @@ def phone_input_info(message: Message) -> None:
         bot.register_next_step_handler(message, phone_input_info)
 
 
-@bot.message_handler(commands=['ip', 'IP'])
+@bot.message_handler(func=lambda m: m.text and m.text.lower().startswith('/ip'))
 def ip_message(message: Message) -> None:
     # Обработка команды /ip — запрос IP-адреса у пользователя
     bot.send_message(message.chat.id, ip_start_text)
@@ -118,7 +118,7 @@ def ip_input_info(message: Message) -> None:
         bot.register_next_step_handler(message, ip_input_info)
 
 
-@bot.message_handler(commands=['history', 'HISTORY'])
+@bot.message_handler(func=lambda m: m.text and m.text.lower().startswith('/history'))
 def send_user_history(message: Message) -> None:
     # Обрабатывает команды /history и /HISTORY, отправляя пользователю его историю запросов
     user_id = str(message.from_user.id)
@@ -133,7 +133,7 @@ def send_map_photo(message: Message, map_url: str) -> None:
     bot.send_photo(message.chat.id, map_url, caption="🗺️ Примерное местоположение по IP")
 
 
-@bot.message_handler(commands=['github', 'GITHUB'])
+@bot.message_handler(func=lambda m: m.text and m.text.lower().startswith('/github'))
 def send_my_github(message: Message) -> None:
     # Отправляет ссылку на GitHub проекта
     bot.send_message(message.chat.id, github_link_text)
