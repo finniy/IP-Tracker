@@ -18,8 +18,8 @@
 1. Клонируйте репозиторий:
 
    ```bash
-   git clone https://github.com/finniy/ip-tracker-bot.git
-   cd ip-tracker-bot
+   git clone https://github.com/finniy/IP-Tracker.git
+   cd IP-Tracker
 
 
 2. Установите зависимости:
