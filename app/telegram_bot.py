@@ -27,7 +27,7 @@ commands = [
 @bot.message_handler(func=lambda m: m.text and m.text.lower().startswith('/start'))
 def start(message: Message) -> None:
     username = message.from_user.username
-    print(f'{username} запустил бота')
+    print(f'[+] {username} запустил бота')
 
     # Обработка команды /start — отправка приветствия и отображение кнопок
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -66,7 +66,7 @@ def phone_input_info(message: Message) -> None:
             username = message.from_user.username
             user_request = number
             add_info_in_database(user_id, username, user_request)
-            print(f'{username} выполнил проверку номера')
+            print(f'[+] {username} выполнил проверку номера')
 
             # Отправка отформатированной информации
             result_list_info = format_phone_info(phone_found(number))
@@ -102,7 +102,7 @@ def ip_input_info(message: Message) -> None:
             username = message.from_user.username
             user_request = ip_address
             add_info_in_database(user_id, username, user_request)
-            print(f'{username} выполнил проверку ip')
+            print(f'[+] {username} выполнил проверку ip')
 
             # Отправка информации и карты
             ip_info = format_ip_info(ip_info)

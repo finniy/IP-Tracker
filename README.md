@@ -18,7 +18,7 @@
 1. Клонируйте репозиторий:
 
    ```bash
-   git clone https://github.com/Finni-py/ip-tracker-bot.git
+   git clone https://github.com/finniy/ip-tracker-bot.git
    cd ip-tracker-bot
 
 
