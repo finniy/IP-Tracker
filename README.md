@@ -67,9 +67,9 @@ IP-Tracker/
 
 ## 📸 Примеры работы бота
 
-<img src="images/photo1.png" width="600" style="display: block; margin: auto;">
+<img src="images/Photo1.png" width="600" style="display: block; margin: auto;">
 
-<img src="images/photo2.png" width="600" style="display: block; margin: auto;">
+<img src="images/Photo2.png" width="600" style="display: block; margin: auto;">
 
 ## 📄 Лицензия
 
