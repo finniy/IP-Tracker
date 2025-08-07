@@ -1,5 +1,5 @@
 import requests
-from check_valid_ip import is_valid_ip_second
+from app.check_valid_ip import is_valid_ip_second
 
 def get_info_by_ip(ip: str, zoom: int = 9) -> tuple[dict | str, str | None]:
     # Получает данные по IP с внешнего API и возвращает информацию и ссылку на карту
