@@ -1,5 +1,6 @@
 import json
 
+
 def found_operator(phone_number: str) -> str:
     # Ищет оператора по коду (трем цифрам после кода страны) в JSON-файле
     operator_number = phone_number[2:5]

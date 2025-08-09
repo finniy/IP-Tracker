@@ -1,6 +1,7 @@
 import phonenumbers
 from phonenumbers import timezone, carrier, geocoder
-from app.work_with_json import found_operator
+from app.utils.work_with_json import found_operator
+from app.messages.message_text import NO_DATA
 
 
 def phone_found(phone_number: str) -> dict[str, str]:
@@ -17,11 +18,11 @@ def phone_found(phone_number: str) -> dict[str, str]:
 
     # Если данные не найдены, ставим заглушку
     if not operator:
-        operator = 'Не удалось найти данные'
+        operator = NO_DATA
     if not city:
-        city = 'Не удалось найти данные'
+        city = NO_DATA
     if not region:
-        region = 'Не удалось найти данные'
+        region = NO_DATA
 
     result_list_info = {
         "City": city,

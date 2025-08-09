@@ -1,5 +1,6 @@
 import requests
-from app.check_valid_ip import is_valid_ip_second
+from app.utils.check_valid_ip import is_valid_ip_second
+from app.logger import logger
 
 def get_info_by_ip(ip: str, zoom: int = 9) -> tuple[dict | str, str | None]:
     # Получает данные по IP с внешнего API и возвращает информацию и ссылку на карту
@@ -15,11 +16,13 @@ def get_info_by_ip(ip: str, zoom: int = 9) -> tuple[dict | str, str | None]:
             }
             return ip_using_info, map_url
         else:
-            return 'IP-adress not found', None
+            logger.error(f'{ip} is not valid')
+            return f'❌ Неверный адрес {ip}', None
 
     except requests.exceptions.ConnectionError:
         # Ошибка соединения с интернетом
-        return "Connection Error", None
+        logger.error("Connection Error")
+        return "❌ Connection Error", None
 
 
 def get_static_map_url(ip_stock_info: dict, zoom: int = 9) -> str:
