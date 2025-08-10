@@ -1,0 +1,5 @@
+.env
+/.venv
+.idea/
+app/user_requests.db
+user_requests.db
