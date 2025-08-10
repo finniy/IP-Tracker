@@ -72,7 +72,7 @@ pip install -r requirements.txt
 ### 5. Запуск бота
 
 ```bash
-python app/main.py
+python main.py
 ```
 
 ---
