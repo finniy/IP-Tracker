@@ -132,6 +132,8 @@ IP-Tracker/
 
 ## 👤 Автор
 
+🚀 **[Перейти к боту в Telegram](https://t.me/IP_Python_Tracker_bot)**
+
 - GitHub: [@finniy](https://github.com/finniy)
 - Telegram: [@fjnnjk](https://t.me/fjnnjk)
 
