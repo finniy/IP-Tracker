@@ -43,33 +43,27 @@ git clone https://https://github.com/finniy/IP-Tracker.git
 cd IP-Tracker
 ```
 
-### 2. Создание виртуального окружения (рекомендуется)
+2. Создайте и активируйте виртуальное окружение
 
 ```bash
 python -m venv venv
+source venv/bin/activate  # Linux/macOS
+venv\Scripts\activate     # Windows
 ```
 
-### 3. Активация виртуального окружения
-
-**Windows:**
-
-```bash
-venv\Scripts\activate
-```
-
-**macOS/Linux:**
-
-```bash
-source venv/bin/activate
-```
-
-### 4. Установка зависимостей
+3. Установите зависимости
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Запуск бота
+4. Укажите токен бота в `.env`
+
+```bash
+API_KEY=YOUR_TELEGRAM_BOT_TOKEN
+```
+
+5. Запустите бота
 
 ```bash
 python main.py
@@ -81,50 +75,46 @@ python main.py
 
 ```
 IP-Tracker/
-├── .env.template
-├── main.py
-├── requirements.txt
-│
 ├── app/
-│ ├── init.py
-│ ├── bot_instance.py
-│ ├── config.py
-│ ├── logger.py
-│ ├── telegram_bot.py
-│
-│ ├── database/
-│ │ ├── init.py
-│ │ ├── add_in_db.py
-│ │ ├── create_db.py
-│ │ └── take_db.py
-│
-│ ├── handlers/
-│ │ ├── init.py
-│ │ ├── history_handler.py
-│ │ ├── ip_handler.py
-│ │ ├── phone_handler.py
-│ │ └── start_handler.py
-│
-│ ├── messages/
-│ │ ├── init.py
-│ │ └── message_text.py
-│
-│ ├── trackers/
-│ │ ├── init.py
-│ │ ├── ip_track.py
-│ │ └── phone_track.py
-│
-│ ├── utils/
-│ │ ├── init.py
-│ │ ├── check_valid_ip.py
-│ │ ├── format_requests.py
-│ │ ├── send_map.py
-│ │ ├── work_with_json.py
-│ │ └── phone_codes.json
-│
+│   ├── __init__.py
+│   ├── bot_instance.py
+│   ├── config.py
+│   ├── logger.py
+│   ├── telegram_bot.py
+│   ├── database/
+│   │   ├── __init__.py
+│   │   ├── add_in_db.py
+│   │   ├── create_db.py
+│   │   └── take_db.py
+│   ├── handlers/
+│   │   ├── __init__.py
+│   │   ├── history_handler.py
+│   │   ├── ip_handler.py
+│   │   ├── phone_handler.py
+│   │   └── start_handler.py
+│   ├── messages/
+│   │   ├── __init__.py
+│   │   └── message_text.py
+│   ├── trackers/
+│   │   ├── __init__.py
+│   │   ├── ip_track.py
+│   │   └── phone_track.py
+│   └── utils/
+│       ├── __init__.py
+│       ├── check_valid_ip.py
+│       ├── format_requests.py
+│       ├── send_map.py
+│       ├── work_with_json.py
+│       └── phone_codes.json
 ├── images/
-│ ├── Photo1.png
-│ └── Photo2.png
+│   ├── Photo1.png
+│   └── Photo2.png
+├── .env
+├── .env.template
+├── .gitignore
+├── main.py
+├── README.md
+└── requirements.txt
 
 ```
 
